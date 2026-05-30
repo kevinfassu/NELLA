@@ -1,0 +1,170 @@
+﻿@page "/nella-nexus"
+@rendermode InteractiveServer
+
+<HeadContent>
+    <PageTitle>NELLA NEXUS</PageTitle>
+</HeadContent>
+
+<div class="nexus-root @(HasEntered ? "entered" : "")">
+    <!-- Background matrix rain -->
+    <canvas id="matrixCanvas" class="matrix-canvas"></canvas>
+
+    <!-- Fading photos behind the card -->
+    <div class="photo-carousel" aria-hidden="true">
+        <img src="Images/IMG_0064.TIF" class="carousel-img @(ActivePhoto == 0 ? "active" : "")" />
+        <img src="Images/Nella Pic Website Green Fit Headphone Wall.PNG" class="carousel-img @(ActivePhoto == 1 ? "active" : "")" />
+        <img src="Images/Nella Women's day pic.png" class="carousel-img @(ActivePhoto == 2 ? "active" : "")" />
+        <img src="Images/backgroundimage.png" class="carousel-img @(ActivePhoto == 3 ? "active" : "")" />
+    </div>
+
+    <!-- Scrim -->
+    <div class="nexus-scrim"></div>
+
+    <!-- Content -->
+    <main class="nexus-main">
+        <div class="nexus-card fade-in-up">
+
+            <h1 class="nexus-logo">NELLA</h1>
+            <p class="nexus-subtitle">// NEXUS PROTOCOL v2.0 //</p>
+
+            <div class="hero-block">
+                <p class="hero-line"><span class="gold">237 ROOTS.</span> LA GRIT.</p>
+                <p class="hero-line"><span class="gold">AFRO-FUTURISTIC</span> SOUND.</p>
+            </div>
+
+            <p class="nexus-desc">
+                The wait is over. The new EP has landed.<br />
+                Step into the frequency. Stream the full experience below.
+            </p>
+
+            <!-- Streaming buttons -->
+            <div class="stream-buttons">
+                <a href="https://open.spotify.com/artist/YOUR_ARTIST_ID"
+                   target="_blank" rel="noopener noreferrer" class="stream-btn spotify">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                    <span>Listen on Spotify</span>
+                </a>
+                <a href="https://music.apple.com/us/artist/nella/YOUR_ARTIST_ID"
+                   target="_blank" rel="noopener noreferrer" class="stream-btn apple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                    <span>Listen on Apple Music</span>
+                </a>
+            </div>
+
+            <div class="divider">
+                <span class="divider-line"></span>
+                <span class="divider-text">// JOIN THE NEXUS //</span>
+                <span class="divider-line"></span>
+            </div>
+
+            <p class="form-intro">
+                Want exclusive content, BTS, and early access?<br />
+                Enter your info to join the inner circle.
+            </p>
+
+            <!-- Signup form -->
+            <EditForm Model="@FormModel" OnValidSubmit="@HandleSubmit" class="nexus-form">
+                <div class="form-field">
+                    <input type="text" placeholder="Your name"
+                           @bind="FormModel.Name" @bind:event="oninput" class="form-input" />
+                </div>
+                <div class="form-field">
+                    <input type="email" placeholder="Email address"
+                           @bind="FormModel.Email" @bind:event="oninput" class="form-input" />
+                </div>
+                <div class="form-field">
+                    <input type="tel" placeholder="Phone (optional)"
+                           @bind="FormModel.Phone" @bind:event="oninput" class="form-input" />
+                </div>
+                <button type="submit" class="submit-btn" disabled="@IsSubmitting">
+                    @if (IsSubmitting) { <span>TRANSMITTING…</span> }
+                    else if (IsSubmitted) { <span>✓ YOU'RE IN THE NEXUS</span> }
+                    else { <span>ENTER THE NEXUS →</span> }
+                </button>
+            </EditForm>
+
+            <div class="divider" style="margin-top:8px;">
+                <span class="divider-line"></span>
+                <span class="divider-text">// EXCLUSIVE //</span>
+                <span class="divider-line"></span>
+            </div>
+
+            <!-- UNLOCK MUSIC SECTION -->
+            @if (ShowTracklist)
+            {
+                <!-- Tracklist (after payment) -->
+                <div class="tracklist-section fade-in-up-fast">
+                    <h2 class="tracklist-title">// UNLOCKED //</h2>
+                    <p class="tracklist-thanks">Thank you for your support. The frequency is yours.</p>
+
+                    <div class="track-item">
+                        <div class="track-info">
+                            <span class="track-number">01</span>
+                            <div>
+                                <span class="track-name">OMG</span>
+                                <span class="track-artist">NELLA</span>
+                            </div>
+                        </div>
+                        <button class="track-play-btn" @onclick="ToggleOMG">
+                            @if (IsPlayingOMG)
+                            { <span>⏸</span> }
+                            else
+                            { <span>▶</span> }
+                        </button>
+                    </div>
+                </div>
+            }
+            else if (ShowDonation)
+            {
+                <!-- Donation panel -->
+                <div class="donation-section fade-in-up-fast">
+                    <h2 class="donation-title">Support the Nexus</h2>
+                    <p class="donation-desc">Choose your donation to unlock exclusive music.</p>
+
+                    <div class="amount-grid">
+                        <button class="amount-btn @(SelectedAmount == 5 ? "selected" : "")"
+                                @onclick="() => SelectAmount(5)">$5</button>
+                        <button class="amount-btn @(SelectedAmount == 10 ? "selected" : "")"
+                                @onclick="() => SelectAmount(10)">$10</button>
+                        <button class="amount-btn @(SelectedAmount == 20 ? "selected" : "")"
+                                @onclick="() => SelectAmount(20)">$20</button>
+                        <button class="amount-btn @(IsCustomAmount ? "selected" : "")"
+                                @onclick="ShowCustom">Other</button>
+                    </div>
+
+                    @if (IsCustomAmount)
+                    {
+                        <div class="custom-amount-wrap">
+                            <span class="currency-sign">$</span>
+                            <input type="number" min="5" placeholder="Min $5"
+                                   @bind="CustomAmountValue" @bind:event="oninput"
+                                   class="form-input custom-input" />
+                        </div>
+                    }
+
+                    <button class="submit-btn donate-btn" @onclick="ProcessDonation"
+                            disabled="@(IsProcessing || FinalAmount < 5)">
+                        @if (IsProcessing)
+                        { <span>PROCESSING…</span> }
+                        else
+                        { <span>DONATE $@FinalAmount & UNLOCK →</span> }
+                    </button>
+
+                    <p class="secure-note">🔒 Secured by Stripe. Card info never touches our servers.</p>
+                </div>
+            }
+            else
+            {
+                <!-- Unlock button -->
+                <button class="unlock-btn" @onclick="ShowDonationPanel">
+                    <span class="unlock-icon">🔓</span>
+                    <span>Unlock New Music!</span>
+                </button>
+            }
+
+            <p class="system-note">// YOUR PRESENCE HAS BEEN RECORDED //</p>
+        </div>
+
+        <p class="nexus-footer">© 2025 NELLA • 237 x HTX • ALL FREQUENCIES RESERVED</p>
+    </main>
+</div>

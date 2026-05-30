@@ -1,0 +1,235 @@
+﻿/* ═══════════════════════════════════════════
+   NELLA — PORTAL LANDING
+   ═══════════════════════════════════════════ */
+
+.portal-root {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: #000;
+}
+
+/* ---------- Video wrapper: centered, native size ---------- */
+.video-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    transition: transform 1.2s cubic-bezier(0.55, 0, 0.15, 1),
+                opacity 0.9s ease 0.3s;
+}
+
+.video-wrap video {
+    width: 1100px;
+    height: 1100px;
+    max-width: none;
+    display: block;
+    background: #000;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+}
+
+/* Fade in once loaded */
+.portal-root.loaded .video-wrap video {
+    opacity: 1;
+}
+
+/* Zoom on transition */
+.portal-root.zooming .video-wrap {
+    transform: scale(5);
+    opacity: 0;
+}
+
+/* ---------- Scrim ---------- */
+.scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(ellipse at center, rgba(5,5,8,0.1) 0%, rgba(5,5,8,0.55) 100%);
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+.portal-root.zooming .scrim {
+    opacity: 0;
+}
+
+/* ---------- Scanlines ---------- */
+.scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.05) 2px,
+        rgba(0,0,0,0.05) 4px
+    );
+    opacity: 0.3;
+}
+
+.portal-root.zooming .scanlines {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* ---------- Centered content ---------- */
+.portal-center {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.portal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ---------- Protocol text ---------- */
+.protocol-tag {
+    font-family: 'Space Grotesk', 'Courier New', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: rgba(255, 216, 96, 0.85);
+    text-transform: uppercase;
+    user-select: none;
+    text-shadow: 0 0 8px rgba(255, 216, 96, 0.3);
+}
+
+.protocol-tag.sub {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.72rem;
+    letter-spacing: 2.5px;
+    text-shadow: none;
+}
+
+/* ---------- Button ---------- */
+.nexus-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 52px;
+    border: 1px solid rgba(255, 216, 96, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 216, 96, 0.06);
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    transition:
+        transform 280ms cubic-bezier(0.23, 1, 0.32, 1),
+        border-color 280ms ease,
+        background-color 280ms ease,
+        box-shadow 280ms ease;
+}
+
+.nexus-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    border-color: rgba(255, 216, 96, 0.7);
+    background: rgba(255, 216, 96, 0.12);
+    box-shadow:
+        0 0 20px rgba(255, 216, 96, 0.15),
+        0 0 60px rgba(255, 216, 96, 0.08),
+        0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.nexus-btn:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 80ms;
+}
+
+.nexus-btn:focus-visible {
+    box-shadow: 0 0 0 2px #050508, 0 0 0 4px rgba(255, 216, 96, 0.6);
+}
+
+.btn-text {
+    position: relative;
+    z-index: 2;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: rgba(255, 255, 255, 0.92);
+    text-transform: uppercase;
+    transition: color 280ms ease, text-shadow 280ms ease;
+}
+
+.nexus-btn:hover .btn-text {
+    color: #fff;
+    text-shadow: 0 0 12px rgba(255, 216, 96, 0.5);
+}
+
+.btn-glow {
+    position: absolute;
+    inset: -1px;
+    z-index: 1;
+    border-radius: 999px;
+    background: radial-gradient(ellipse at center, rgba(255,216,96,0.18) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 400ms ease;
+}
+
+.nexus-btn:hover .btn-glow {
+    opacity: 1;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.08); }
+}
+
+/* ---------- Zoom: hide button ---------- */
+.portal-root.zooming .portal-content {
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.55, 0, 0.15, 1);
+    pointer-events: none;
+}
+
+/* ---------- Fade-up entrance ---------- */
+.fade-up {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.9s ease 0.6s, transform 0.9s cubic-bezier(0.23, 1, 0.32, 1) 0.6s;
+}
+
+.portal-root.loaded .fade-up {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .video-wrap, .portal-content, .fade-up, .nexus-btn, .btn-glow {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+    .portal-root.loaded .video-wrap video { opacity: 1; }
+    .portal-root.loaded .fade-up { opacity: 1; transform: none; }
+}
+
+/* ---------- Mobile: scale video down ---------- */
+@media (max-width: 1100px) {
+    .video-wrap video {
+        width: 100vw;
+        height: 100vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .nexus-btn { padding: 16px 36px; }
+    .btn-text { font-size: 0.95rem; letter-spacing: 3px; }
+    .protocol-tag { font-size: 0.6rem; }
+}
+

@@ -1,0 +1,36 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<HeadContent>
+    <PageTitle>NELLA — The Portal</PageTitle>
+</HeadContent>
+
+<div class="portal-root @(IsZooming ? "zooming" : "") @(HasLoaded ? "loaded" : "")">
+
+    <!-- Video N at native size, centered -->
+    <div class="video-wrap" aria-hidden="true">
+        <video autoplay loop muted playsinline disablepictureinpicture>
+            <source src="videos/nella-bg.mp4" type="video/mp4" />
+        </video>
+    </div>
+
+    <!-- Vignette -->
+    <div class="scrim" aria-hidden="true"></div>
+
+    <!-- Scanlines -->
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <!-- Centered portal button -->
+    <main class="portal-center">
+        <div class="portal-content fade-up">
+            <span class="protocol-tag">// NEXUS PROTOCOL v2.0 //</span>
+
+            <button class="nexus-btn" @onclick="EnterNexus" aria-label="Enter Nella Nexus">
+                <span class="btn-glow" aria-hidden="true"></span>
+                <span class="btn-text">NELLA NEXUS</span>
+            </button>
+
+            <span class="protocol-tag sub">// ENTER THE FREQUENCY //</span>
+        </div>
+    </main>
+</div>
