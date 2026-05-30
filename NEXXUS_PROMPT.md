@@ -1,24 +1,25 @@
-# NEXXUS — Claude Code Build Prompt
+# NEXXUS — Claude Code Build Prompt v2.0
 ## A Place, Not a Page · Nella's Artist Universe
 **Project:** MyBlazorApp (.NET 9 / Blazor Server)  
 **Stack:** Blazor Server · C# · JavaScript · CSS  
 **Payments:** Stripe Checkout + Webhooks  
 **Prepared for:** Claude Code (lead build AI)  
-**Author:** Nella · Version 1.0
+**Author:** Nella · Version 2.0
 
 ---
 
 ## 00 — How to Use This Document
 
-Read the entire document before writing a single line. Do not skip sections. Do not infer — if it is not written here, ask before building.
+Read the **entire document** before writing a single line. Do not skip sections. Do not infer — if it is not written here, ask before building.
 
-### Sacred Rules
-- One word is banned in all copy: the r-word commonly paired with "discipline" or "control." Use: discipline, edit, selection, taste.
-- Never re-order the song catalog: JEJE · DANDA KIDI · NO VISA · LUKAKU · OMG · LEFT ON READ · QUEEN.
-- Brand accent colors only: Cowrie Cream `#F4E8D0` and Gold `#C9A96A`. No purple, no neon.
-- Always spell Fèfè with the grave accent on the first e.
+### Sacred Rules (Non-Negotiable)
+- One word is banned in all copy: the r-word commonly paired with "discipline" or "control." Use instead: discipline, edit, selection, taste.
+- **Never re-order the song catalog:** JEJE · DANDA KIDI · NO VISA · LUKAKU · OMG · LEFT ON READ · QUEEN
+- **Brand accent colors only:** Cowrie Cream `#F4E8D0` and Gold `#C9A96A`. No purple, no neon.
+- **Always spell Fèfè** with the grave accent on the first e.
 - No emoji in product copy. Use typography for emphasis.
-- Sacred phrases (do not paraphrase): "A place, not a page." · "AI as instrument. Nella as composer."
+- Sacred phrases (do not paraphrase): *"A place, not a page."* · *"AI as instrument. Nella as composer."*
+- User photos **NEVER** persisted. PII **NEVER** sold. AI output **NEVER** attributed to a real person without opt-in.
 
 ### File Separation Rule — No Exceptions
 - `PageName.razor` → HTML markup ONLY. Zero `@code` blocks.
@@ -48,96 +49,140 @@ NEXXUS is not a website. It is her universe. A frequency fans walk into.
 
 ---
 
-## 02 — Current State of the Project
+## 02 — The Full Vision (Read This First)
 
-The project exists at `MyBlazorApp` (.NET 9, Blazor Server). **Do not scaffold a new project. Do not change the project name.**
+NEXXUS is an immersive single-page web experience that doubles as Nella's artist universe. The visitor crosses a threshold, lands in an atrium, and chooses between rooms. Every room reinforces a single brand idea: **Nella's IP is a world you can walk around in.**
 
-### What Already Works — Do Not Break
-- `App.razor` — global shell with font preloads and script references
-- `Landing.razor` + `Landing.razor.cs` + `landing.razor.css` — the portal entry page
-- `NellaNexus.razor` + `NellaNexus.razor.cs` + `NellaNexus.razor.css` — the nexus hub page
-- `Program.cs` — includes Stripe Checkout + Webhook API endpoints with rate limiting and HMAC verification
-- `wwwroot/js/landing.js` — `nellaLanding.init()` function
-- `wwwroot/videos/nella-bg.mp4` — the N lettermark video background
-- `wwwroot/audio/intro.mp3` — portal intro music (plays on NELLA NEXUS button click, loops with 6-second gap)
-- `wwwroot/audio/OMG.wav` — the unlockable track
-- `wwwroot/Images/` — artist photos for the fading carousel on the nexus page
+### The Rooms
+1. **7 Song-Worlds** — JEJE, DANDA KIDI, NO VISA, LUKAKU, OMG, LEFT ON READ, QUEEN. Each is a unique immersive environment with its own canvas FX, color palette, and audio.
+2. **Fashion Room** — AI try-on. Fan uploads their photo, AI dresses them in Nella's wardrobe. Privacy-first: photos held in RAM only, never persisted.
+3. **Rest House** — Fan guestbook / community wall. Fans leave messages, read others.
+4. **Language Room** — Full experience in English, French, Pidgin, and Fèfè.
+5. **Moonbeam City** — A 3D city rendered in three.js representing Nella's world.
+6. **NELLA NEXUS Hub** — Streaming links, fan signup, donation/music unlock. This is a room, not the gateway.
 
-### Landing Page Behavior (Working)
-- Full-viewport looping `nella-bg.mp4` video (soundwave N lettermark) on pure black background
-- Centered pill button "NELLA NEXUS" with gold border glow on hover
-- Protocol tags: "// NEXUS PROTOCOL v2.0 //" and "// ENTER THE FREQUENCY //"
-- On click: `intro.mp3` starts → video zooms in → navigates to `/nella-nexus`
-- On return to landing: audio stops cleanly
+### The Navigation Flow
+```
+LANDING (threshold)
+  — nella-bg.mp4 video background (N lettermark)
+  — intro.mp3 starts playing automatically on page load
+  — centered "NELLA NEXUS" button
+  — click → zoom animation → navigate to /atrium
+  — audio continues into atrium
 
-### Nexus Page Behavior (Working)
-- Background: bluish-silver matrix rain canvas (11px monospace, katakana + NELLA chars)
-- Behind the card: 4 artist photos cycle with 2s cross-fade every 4 seconds, dimmed to 25% opacity
-- Card: NELLA gradient logo, hero text, Spotify + Apple Music buttons, sign-up form
-- Unlock Music button → donation panel ($5/$10/$20/Other, min $5) → Stripe Checkout
-- After Stripe payment: server-side verification via `session_id` → tracklist with OMG track + play/pause
-- Audio: `OMG.wav` plays/pauses. `intro.mp3` stops when landing page loads.
+ATRIUM (room selector)
+  — bluish-silver matrix rain background
+  — grid of room cards: 7 song-worlds + Fashion + Rest House + Language + City + Nexus Hub
+  — fan chooses a room → enters it
+  — audio stops when entering any room/world
+
+WORLD / ROOM PAGES
+  — each has its own background, color palette, canvas FX
+  — HUD with back button → returns to Atrium
+  — world-specific audio (future phase)
+```
+
+### What /nella-nexus Becomes
+The `/nella-nexus` route stays but it is now **one of the rooms** accessible from the Atrium — not the main gateway. It contains: streaming links (Spotify, Apple Music), fan signup form, donation/music unlock flow, and the photo carousel.
 
 ---
 
-## 03 — Full Project File Structure
+## 03 — Current State of the Project
 
-Items marked `[EXISTS]` are already in place. Items marked `[BUILD]` need to be created.
+**Do not scaffold a new project. Do not change the project name.** Read what exists before building anything.
+
+### Files That Exist and Work — Do Not Break
+- `App.razor` — global shell with Space Grotesk font, video preload, script references
+- `MainLayout.razor` + `MainLayout.razor.css` — stripped layout (no sidebar, no top-row)
+- `Landing.razor` + `Landing.razor.cs` + `landing.razor.css` — the threshold/portal page
+- `NellaNexus.razor` + `NellaNexus.razor.cs` + `NellaNexus.razor.css` — the nexus hub room
+- `Program.cs` — Stripe Checkout + Webhook API with rate limiting and HMAC verification
+- `appsettings.json` — Stripe config
+- `wwwroot/js/landing.js` — `nellaLanding.init()` function
+- `wwwroot/videos/nella-bg.mp4` — the N lettermark video
+- `wwwroot/audio/intro.mp3` — portal ambient music
+- `wwwroot/audio/OMG.wav` — the unlockable track
+- `wwwroot/Images/` — 4 artist photos for the nexus page carousel
+
+### Changes Required to Existing Files
+
+**Landing.razor.cs** — Change audio to start on page load (not on button click). Stop audio when entering a world (handled in world pages). Keep the zoom animation on button click.
+
+**Landing.razor.cs updated audio logic:**
+- On `OnAfterRenderAsync` firstRender: start `intro.mp3` automatically
+- Remove audio start from `EnterNexus()` — it already plays
+- Keep the zoom + navigate to `/atrium` (not `/nella-nexus`)
+- `EnterNexus()` navigates to `/atrium` not `/nella-nexus`
+
+**App.razor** — Add `<script src="js/worlds.js"></script>` to body.
+
+---
+
+## 04 — Full Project File Structure
 
 ```
 MyBlazorApp/
 ├── Components/
 │   ├── Layout/
-│   │   ├── MainLayout.razor          [EXISTS — stripped, no sidebar]
-│   │   └── MainLayout.razor.css      [EXISTS]
+│   │   ├── MainLayout.razor              [EXISTS — no sidebar]
+│   │   └── MainLayout.razor.css          [EXISTS]
 │   └── Pages/
-│       ├── Landing.razor             [EXISTS]
-│       ├── Landing.razor.cs          [EXISTS]
-│       ├── landing.razor.css         [EXISTS]
-│       ├── NellaNexus.razor          [EXISTS]
-│       ├── NellaNexus.razor.cs       [EXISTS]
-│       ├── NellaNexus.razor.css      [EXISTS]
-│       ├── Atrium.razor              [BUILD — room selector hub]
-│       ├── Atrium.razor.cs           [BUILD]
-│       ├── Atrium.razor.css          [BUILD]
-│       ├── World.razor               [BUILD — dynamic route /world/{slug}]
-│       ├── World.razor.cs            [BUILD]
-│       ├── World.razor.css           [BUILD]
-│       ├── Fashion.razor             [PHASE 2]
-│       ├── RestHouse.razor           [PHASE 2]
-│       └── LanguageRoom.razor        [PHASE 2]
-├── App.razor                         [EXISTS]
-├── Routes.razor                      [EXISTS]
-├── _Imports.razor                    [EXISTS]
-├── Program.cs                        [EXISTS — includes Stripe API]
-├── appsettings.json                  [EXISTS — Stripe keys here]
+│       ├── Landing.razor                 [EXISTS — update audio + nav target]
+│       ├── Landing.razor.cs              [EXISTS — update audio + nav target]
+│       ├── landing.razor.css             [EXISTS]
+│       ├── NellaNexus.razor              [EXISTS — now a room, not gateway]
+│       ├── NellaNexus.razor.cs           [EXISTS]
+│       ├── NellaNexus.razor.css          [EXISTS]
+│       ├── Atrium.razor                  [BUILD — main hub/room selector]
+│       ├── Atrium.razor.cs               [BUILD]
+│       ├── Atrium.razor.css              [BUILD]
+│       ├── World.razor                   [BUILD — /world/{slug}]
+│       ├── World.razor.cs                [BUILD]
+│       ├── World.razor.css               [BUILD]
+│       ├── Fashion.razor                 [BUILD — /fashion]
+│       ├── Fashion.razor.cs              [BUILD]
+│       ├── Fashion.razor.css             [BUILD]
+│       ├── RestHouse.razor               [BUILD — /rest-house]
+│       ├── RestHouse.razor.cs            [BUILD]
+│       ├── RestHouse.razor.css           [BUILD]
+│       ├── LanguageRoom.razor            [BUILD — /language/{lang}]
+│       ├── LanguageRoom.razor.cs         [BUILD]
+│       ├── LanguageRoom.razor.css        [BUILD]
+│       ├── City.razor                    [BUILD — /city, three.js]
+│       ├── City.razor.cs                 [BUILD]
+│       └── City.razor.css               [BUILD]
+├── App.razor                             [EXISTS — add worlds.js script]
+├── Routes.razor                          [EXISTS]
+├── _Imports.razor                        [EXISTS]
+├── Program.cs                            [EXISTS — Stripe API]
+├── appsettings.json                      [EXISTS]
 └── wwwroot/
-    ├── app.css                       [EXISTS]
-    ├── favicon.png                   [EXISTS]
+    ├── app.css                           [EXISTS]
+    ├── favicon.png                       [EXISTS]
     ├── js/
-    │   ├── landing.js               [EXISTS]
-    │   └── worlds.js                [BUILD — per-world canvas FX]
+    │   ├── landing.js                   [EXISTS]
+    │   └── worlds.js                    [BUILD — canvas FX per world]
     ├── videos/
-    │   └── nella-bg.mp4             [EXISTS]
+    │   └── nella-bg.mp4                 [EXISTS]
     ├── audio/
-    │   ├── intro.mp3                [EXISTS]
-    │   └── OMG.wav                  [EXISTS]
+    │   ├── intro.mp3                    [EXISTS — ambient portal music]
+    │   └── OMG.wav                      [EXISTS — unlockable track]
     └── Images/
-        ├── nella-photo-1.jpg through nella-photo-4.jpg  [EXISTS]
+        └── nella-photo-[1-4].jpg        [EXISTS — nexus carousel]
 ```
 
 ---
 
-## 04 — Architecture & Coding Rules
+## 05 — Architecture & Coding Rules
 
 ### Blazor Patterns
 - `@rendermode InteractiveServer` on every page component
-- Never put `@code` blocks in `.razor` files. All C# belongs in `.razor.cs`
-- All members that `.razor` markup binds to must be `public` in the code-behind class
+- Never put `@code` blocks in `.razor` files — all C# in `.razor.cs`
+- All members bound in markup (`@bind`, `@onclick`, `@if` conditions) must be `public` in code-behind
 - `ElementReference` fields must be `public` for `@ref` to work
-- Use `JS.InvokeVoidAsync("eval", ...)` for quick inline JS
-- Always use `getElementById(id)` in JS — never `ElementReference` parameters
-- Canvas animations store their `requestAnimationFrame` handle on `window._xxxRaf`
+- Use `JS.InvokeVoidAsync("eval", ...)` for inline JS execution
+- Always use `document.getElementById(id)` in JS — never pass `ElementReference` parameters (unreliable across render cycles)
+- Canvas animations store their RAF handle on `window._xxxRaf` so they can be cancelled in `DisposeAsync()`
 - Timers (`System.Timers.Timer`) must be disposed in `DisposeAsync()` via `IAsyncDisposable`
 
 ### CSS Rules
@@ -145,84 +190,34 @@ MyBlazorApp/
 - Global styles in `wwwroot/app.css` only
 - Brand colors: `--color-gold: #C9A96A` · `--color-cream: #F4E8D0` · Background: `#000000`
 - Font: Space Grotesk (loaded via Google Fonts in App.razor). Fallback: Helvetica Neue, Arial
-- All immersive pages: `position: fixed; inset: 0; overflow-y: auto`
+- All immersive pages: `position: fixed; inset: 0; overflow-y: auto; background: #000`
+- No Bootstrap layout classes on immersive pages
 
 ### JavaScript Rules
 - All JS in `wwwroot/js/` as plain `.js` files. Never inline in `.razor`
-- Canvas init: always set both `canvas.width/height` (attributes) AND `canvas.style.width/height`
-- Attach `window.addEventListener("resize", ...)` for every canvas
-- Store all global handles on `window._` prefixed keys
+- Canvas init: always set `canvas.width/height` (attributes) AND `canvas.style.width/height`
+- Always attach `window.addEventListener("resize", ...)` for canvas elements
+- Global handles: `window._nellaAudio`, `window._matrixRaf`, `window._worldRaf`, `window._fashionRaf`
 
 ### Security Rules
-- Stripe Secret Key: env var `STRIPE_SECRET_KEY` first, then `appsettings.json`
-- Webhook: verify `Stripe-Signature` header with HMAC-SHA256. Reject events older than 5 minutes
-- Payment verification: `/api/verify-payment` checks PaymentStore AND calls Stripe API. A bare `?paid=true` URL param NEVER unlocks content
+- Stripe Secret Key: env var `STRIPE_SECRET_KEY` first, then `appsettings.json Stripe:SecretKey`
+- Stripe Webhook: verify `Stripe-Signature` with HMAC-SHA256. Reject events > 5 minutes old
+- `/api/verify-payment` must check PaymentStore AND call Stripe API — `?paid=true` alone NEVER unlocks
 - Rate limiting: 5 req/min on `/api/create-checkout`, 30 req/min on webhook
 - HTTPS enforced in production
+- **Fashion Room:** photos held in RAM only. No disk write. No log lines containing image bytes.
 
 ---
 
-## 05 — Complete Code: Existing Files
+## 06 — Updated Landing Page (Changes Required)
 
-### App.razor
-```razor
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="preload" as="video" href="videos/nella-bg.mp4" />
-    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
-    <link rel="stylesheet" href="@Assets["app.css"]" />
-    <link rel="stylesheet" href="@Assets["MyBlazorApp.styles.css"]" />
-    <ImportMap />
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <HeadOutlet />
-</head>
-<body>
-    <Routes />
-    <script src="_framework/blazor.web.js"></script>
-    <script src="js/landing.js"></script>
-    <script src="js/worlds.js"></script>
-</body>
-</html>
-```
+### What Changes
+1. `intro.mp3` starts automatically on page load (not on button click)
+2. `EnterNexus()` navigates to `/atrium` instead of `/nella-nexus`
+3. Audio continues playing into the Atrium
+4. Audio stops when user enters a world (handled in World.razor.cs)
 
-### Landing.razor
-```razor
-@page "/"
-@rendermode InteractiveServer
-
-<HeadContent>
-    <PageTitle>NELLA — The Portal</PageTitle>
-</HeadContent>
-
-<div class="portal-root @(IsZooming ? "zooming" : "") @(HasLoaded ? "loaded" : "")">
-    <div class="video-wrap" aria-hidden="true">
-        <video autoplay loop muted playsinline disablepictureinpicture>
-            <source src="videos/nella-bg.mp4" type="video/mp4" />
-        </video>
-    </div>
-    <div class="scrim" aria-hidden="true"></div>
-    <div class="scanlines" aria-hidden="true"></div>
-    <main class="portal-center">
-        <div class="portal-content fade-up">
-            <span class="protocol-tag">// NEXUS PROTOCOL v2.0 //</span>
-            <button class="nexus-btn" @onclick="EnterNexus" aria-label="Enter Nella Nexus">
-                <span class="btn-glow" aria-hidden="true"></span>
-                <span class="btn-text">NELLA NEXUS</span>
-            </button>
-            <span class="protocol-tag sub">// ENTER THE FREQUENCY //</span>
-        </div>
-    </main>
-</div>
-```
-
-### Landing.razor.cs
+### Updated Landing.razor.cs
 ```csharp
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -241,6 +236,7 @@ public partial class Landing : ComponentBase
     {
         if (firstRender)
         {
+            // Stop audio if user navigated back from a world
             try
             {
                 await JS.InvokeVoidAsync("eval", @"
@@ -258,6 +254,35 @@ public partial class Landing : ComponentBase
             await Task.Delay(100);
             HasLoaded = true;
             StateHasChanged();
+
+            // Start intro audio automatically on page load
+            try
+            {
+                await JS.InvokeVoidAsync("eval", @"
+                    (function() {
+                        if (window._nellaAudio) return;
+                        var a = new Audio('audio/intro.mp3');
+                        a.volume = 0.8;
+                        a.play().catch(function() {
+                            // Autoplay blocked — wait for first user interaction
+                            document.addEventListener('click', function startAudio() {
+                                a.play();
+                                document.removeEventListener('click', startAudio);
+                            }, { once: true });
+                        });
+                        window._nellaAudio = a;
+                        a.addEventListener('ended', function() {
+                            setTimeout(function() {
+                                if (window._nellaAudio) {
+                                    window._nellaAudio.currentTime = 0;
+                                    window._nellaAudio.play();
+                                }
+                            }, 6000);
+                        });
+                    })();
+                ");
+            }
+            catch { }
         }
     }
 
@@ -267,223 +292,28 @@ public partial class Landing : ComponentBase
         IsZooming = true;
         StateHasChanged();
 
-        try
-        {
-            await JS.InvokeVoidAsync("eval", @"
-                (function() {
-                    var a = new Audio('audio/intro.mp3');
-                    a.volume = 1; a.play();
-                    window._nellaAudio = a;
-                    a.addEventListener('ended', function() {
-                        setTimeout(function() {
-                            if (window._nellaAudio) {
-                                window._nellaAudio.currentTime = 0;
-                                window._nellaAudio.play();
-                            }
-                        }, 6000);
-                    });
-                })();
-            ");
-        }
-        catch { }
-
+        // Zoom animation plays, audio continues
         await Task.Delay(1200);
-        Nav.NavigateTo("/nella-nexus");
+        Nav.NavigateTo("/atrium"); // Goes to Atrium, not /nella-nexus
     }
 }
 ```
-
-### Program.cs
-```csharp
-using MyBlazorApp.Components;
-using System.Collections.Concurrent;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-builder.Services.AddHttpClient();
-builder.Services.AddSingleton<PaymentStore>();
-
-builder.Services.AddRateLimiter(options => {
-    options.AddFixedWindowLimiter("checkout", opt => {
-        opt.PermitLimit = 5; opt.Window = TimeSpan.FromMinutes(1); opt.QueueLimit = 0;
-    });
-    options.AddFixedWindowLimiter("webhook", opt => {
-        opt.PermitLimit = 30; opt.Window = TimeSpan.FromMinutes(1); opt.QueueLimit = 0;
-    });
-    options.OnRejected = async (ctx, token) => {
-        ctx.HttpContext.Response.StatusCode = 429;
-        await ctx.HttpContext.Response.WriteAsync("Too many requests.", token);
-    };
-});
-
-var app = builder.Build();
-
-if (!app.Environment.IsDevelopment()) {
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-    app.UseHttpsRedirection();
-}
-
-app.UseStaticFiles();
-app.UseAntiforgery();
-app.UseRateLimiter();
-
-string GetStripeSecret() =>
-    Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY")
-    ?? app.Configuration["Stripe:SecretKey"]
-    ?? throw new InvalidOperationException("Stripe secret key not configured");
-
-string GetWebhookSecret() =>
-    Environment.GetEnvironmentVariable("STRIPE_WEBHOOK_SECRET")
-    ?? app.Configuration["Stripe:WebhookSecret"]
-    ?? throw new InvalidOperationException("Webhook secret not configured");
-
-// POST /api/create-checkout
-app.MapPost("/api/create-checkout", async (HttpRequest req, PaymentStore store) => {
-    using var reader = new StreamReader(req.Body);
-    var body = await reader.ReadToEndAsync();
-    int amount;
-    try { var j = JsonDocument.Parse(body); amount = j.RootElement.GetProperty("amount").GetInt32(); }
-    catch { return Results.BadRequest(new { error = "Invalid request" }); }
-    if (amount < 5 || amount > 10000) return Results.BadRequest(new { error = "Amount must be $5-$10,000" });
-
-    using var http = new HttpClient();
-    http.DefaultRequestHeaders.Authorization =
-        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetStripeSecret());
-
-    var origin = $"{req.Scheme}://{req.Host}";
-    var form = new FormUrlEncodedContent(new Dictionary<string, string> {
-        ["payment_method_types[0]"] = "card",
-        ["line_items[0][price_data][currency]"] = "usd",
-        ["line_items[0][price_data][product_data][name]"] = "NELLA NEXUS — Donation",
-        ["line_items[0][price_data][product_data][description]"] = $"Support Nella — ${amount} donation",
-        ["line_items[0][price_data][unit_amount]"] = (amount * 100).ToString(),
-        ["line_items[0][quantity]"] = "1",
-        ["mode"] = "payment",
-        ["success_url"] = $"{origin}/nella-nexus?session_id={{CHECKOUT_SESSION_ID}}",
-        ["cancel_url"] = $"{origin}/nella-nexus",
-    });
-
-    var res = await http.PostAsync("https://api.stripe.com/v1/checkout/sessions", form);
-    var resBody = await res.Content.ReadAsStringAsync();
-    if (!res.IsSuccessStatusCode) return Results.Json(new { error = "Stripe error" }, statusCode: 500);
-
-    var session = JsonDocument.Parse(resBody);
-    var url = session.RootElement.GetProperty("url").GetString();
-    var sid = session.RootElement.GetProperty("id").GetString();
-    store.AddPending(sid!);
-    return Results.Json(new { url });
-}).RequireRateLimiting("checkout");
-
-// POST /api/stripe-webhook
-app.MapPost("/api/stripe-webhook", async (HttpRequest req, PaymentStore store) => {
-    using var reader = new StreamReader(req.Body);
-    var payload = await reader.ReadToEndAsync();
-    var sig = req.Headers["Stripe-Signature"].FirstOrDefault();
-    if (string.IsNullOrEmpty(sig)) return Results.BadRequest("Missing signature");
-
-    var parts = sig.Split(",").Select(p => p.Split("="))
-        .Where(p => p.Length == 2).ToDictionary(p => p[0], p => p[1]);
-    if (!parts.TryGetValue("t", out var ts) || !parts.TryGetValue("v1", out var sigV))
-        return Results.BadRequest("Invalid signature");
-
-    if (long.TryParse(ts, out var tsLong))
-        if (Math.Abs(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - tsLong) > 300)
-            return Results.BadRequest("Timestamp expired");
-
-    using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(GetWebhookSecret()));
-    var expected = Convert.ToHexString(
-        hmac.ComputeHash(Encoding.UTF8.GetBytes($"{ts}.{payload}"))).ToLowerInvariant();
-    if (expected != sigV) return Results.BadRequest("Invalid signature");
-
-    var ev = JsonDocument.Parse(payload);
-    if (ev.RootElement.GetProperty("type").GetString() == "checkout.session.completed") {
-        var obj = ev.RootElement.GetProperty("data").GetProperty("object");
-        var sessionId = obj.GetProperty("id").GetString();
-        if (obj.GetProperty("payment_status").GetString() == "paid" && sessionId != null)
-            store.Confirm(sessionId);
-    }
-    return Results.Ok();
-}).RequireRateLimiting("webhook");
-
-// GET /api/verify-payment?sessionId=xxx
-app.MapGet("/api/verify-payment", async (string sessionId, PaymentStore store) => {
-    if (string.IsNullOrEmpty(sessionId)) return Results.BadRequest(new { valid = false });
-    if (store.IsConfirmed(sessionId)) return Results.Json(new { valid = true });
-
-    using var http = new HttpClient();
-    http.DefaultRequestHeaders.Authorization =
-        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GetStripeSecret());
-    var res = await http.GetAsync($"https://api.stripe.com/v1/checkout/sessions/{sessionId}");
-    if (!res.IsSuccessStatusCode) return Results.Json(new { valid = false });
-    var body = await res.Content.ReadAsStringAsync();
-    var s = JsonDocument.Parse(body);
-    if (s.RootElement.GetProperty("payment_status").GetString() == "paid") {
-        store.Confirm(sessionId);
-        return Results.Json(new { valid = true });
-    }
-    return Results.Json(new { valid = false });
-}).RequireRateLimiting("checkout");
-
-app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
-app.Run();
-
-public class PaymentStore {
-    private readonly ConcurrentDictionary<string, (string status, DateTimeOffset created)> _s = new();
-    public void AddPending(string id) { _s[id] = ("pending", DateTimeOffset.UtcNow); Cleanup(); }
-    public void Confirm(string id) => _s.AddOrUpdate(id, ("confirmed", DateTimeOffset.UtcNow),
-        (_, e) => ("confirmed", e.created));
-    public bool IsConfirmed(string id) => _s.TryGetValue(id, out var r) && r.status == "confirmed";
-    private void Cleanup() {
-        var cut = DateTimeOffset.UtcNow.AddHours(-2);
-        foreach (var k in _s.Where(x => x.Value.created < cut).Select(x => x.Key)) _s.TryRemove(k, out _);
-    }
-}
-```
-
-### appsettings.json
-```json
-{
-  "Logging": { "LogLevel": { "Default": "Information", "Microsoft.AspNetCore": "Warning" } },
-  "AllowedHosts": "*",
-  "Stripe": {
-    "SecretKey": "sk_live_REPLACE_WITH_YOUR_SECRET_KEY",
-    "WebhookSecret": "whsec_REPLACE_WITH_YOUR_WEBHOOK_SECRET"
-  }
-}
-```
-> **NEVER commit real secret keys to git. Use environment variables in production.**
 
 ---
 
-## 06 — Next Build: The Atrium (Room Selector)
+## 07 — The Atrium (Main Hub)
 
-Route: `/atrium`. The hub after the Nexus page where fans choose a song-world.
+Route: `/atrium`. The room selector — the heart of NEXXUS. Fans arrive here from the landing page and choose where to go.
 
-### Visual Design
-- Pure black background
-- Seven room cards in a grid, one per song-world
-- Each card: song title, mood descriptor, "ENTER →" button
-- On hover: card glows gold, subtle scale up
-- Page entrance: cards fade and slide up staggered (CSS animation-delay using `--delay` CSS var)
-- Matrix rain continues as background (reuse existing matrix rain logic with canvas id `atriumMatrix`)
-
-### Song-World Catalog — EXACT ORDER, DO NOT CHANGE
-
-| # | Slug | Title | Mood |
-|---|------|-------|------|
-| 01 | jeje | JEJE | Warm, celebratory, Cameroonian roots |
-| 02 | danda-kidi | DANDA KIDI | Percussive energy, fierce, rhythmic |
-| 03 | no-visa | NO VISA | Love across borders, Afrobeats + diaspora |
-| 04 | lukaku | LUKAKU | Self-worth anthem, gold, unstoppable |
-| 05 | omg | OMG | Electrifying, surprise, peak energy |
-| 06 | left-on-read | LEFT ON READ | Digital longing, melancholic, intimate |
-| 07 | queen | QUEEN | The closer. Regal, definitive, triumphant |
+### Room Cards (in order)
+| # | Route | Label | Description |
+|---|-------|-------|-------------|
+| 01-07 | /world/{slug} | Song titles | The 7 song-worlds |
+| 08 | /fashion | FASHION ROOM | AI try-on · Nella's wardrobe |
+| 09 | /rest-house | REST HOUSE | Fan guestbook · Community |
+| 10 | /language/en | LANGUAGE ROOM | EN · FR · Pidgin · Fèfè |
+| 11 | /city | MOONBEAM CITY | 3D city · Nella's world |
+| 12 | /nella-nexus | NELLA NEXUS | Stream · Support · Join |
 
 ### Atrium.razor
 ```razor
@@ -500,18 +330,38 @@ Route: `/atrium`. The hub after the Nexus page where fans choose a song-world.
             <h1 class="atrium-title">NELLA NEXUS</h1>
             <p class="atrium-sub">// CHOOSE YOUR WORLD //</p>
         </header>
-        <div class="worlds-grid">
-            @foreach (var world in Worlds)
-            {
-                <div class="world-card fade-up" style="--delay: @(world.Index * 80)ms"
-                     @onclick="() => EnterWorld(world.Slug)">
-                    <span class="world-num">@world.Number</span>
-                    <h2 class="world-name">@world.Title</h2>
-                    <p class="world-mood">@world.Mood</p>
-                    <span class="world-enter">ENTER →</span>
-                </div>
-            }
-        </div>
+
+        <section class="rooms-section">
+            <p class="section-label">// SONG WORLDS //</p>
+            <div class="worlds-grid">
+                @foreach (var world in SongWorlds)
+                {
+                    <div class="room-card world-card fade-up" style="--delay: @(world.Index * 80)ms"
+                         @onclick="() => EnterRoom(world.Route)">
+                        <span class="card-num">@world.Number</span>
+                        <h2 class="card-title">@world.Title</h2>
+                        <p class="card-desc">@world.Mood</p>
+                        <span class="card-enter">ENTER →</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="rooms-section">
+            <p class="section-label">// OTHER ROOMS //</p>
+            <div class="rooms-grid">
+                @foreach (var room in OtherRooms)
+                {
+                    <div class="room-card fade-up" style="--delay: @(room.Index * 100)ms"
+                         @onclick="() => EnterRoom(room.Route)">
+                        <span class="card-icon">@room.Icon</span>
+                        <h2 class="card-title">@room.Title</h2>
+                        <p class="card-desc">@room.Description</p>
+                        <span class="card-enter">ENTER →</span>
+                    </div>
+                }
+            </div>
+        </section>
     </main>
 </div>
 ```
@@ -530,16 +380,24 @@ public partial class Atrium : ComponentBase, IAsyncDisposable
 
     public bool HasEntered { get; set; }
 
-    public record WorldCard(int Index, string Number, string Slug, string Title, string Mood);
+    public record RoomCard(int Index, string Number, string Route, string Title, string Mood, string Icon = "");
 
-    public List<WorldCard> Worlds { get; } = new() {
-        new(0, "01", "jeje",         "JEJE",         "Warm, celebratory, Cameroonian roots"),
-        new(1, "02", "danda-kidi",   "DANDA KIDI",   "Percussive energy, fierce, rhythmic"),
-        new(2, "03", "no-visa",      "NO VISA",       "Love across borders, Afrobeats + diaspora"),
-        new(3, "04", "lukaku",       "LUKAKU",        "Self-worth anthem, gold, unstoppable"),
-        new(4, "05", "omg",          "OMG",           "Electrifying, surprise, peak energy"),
-        new(5, "06", "left-on-read", "LEFT ON READ",  "Digital longing, melancholic, intimate"),
-        new(6, "07", "queen",        "QUEEN",         "The closer. Regal, definitive, triumphant"),
+    public List<RoomCard> SongWorlds { get; } = new() {
+        new(0,  "01", "/world/jeje",         "JEJE",         "Warm, celebratory, Cameroonian roots"),
+        new(1,  "02", "/world/danda-kidi",   "DANDA KIDI",   "Percussive energy, fierce, rhythmic"),
+        new(2,  "03", "/world/no-visa",      "NO VISA",      "Love across borders, Afrobeats + diaspora"),
+        new(3,  "04", "/world/lukaku",       "LUKAKU",       "Self-worth anthem, gold, unstoppable"),
+        new(4,  "05", "/world/omg",          "OMG",          "Electrifying, surprise, peak energy"),
+        new(5,  "06", "/world/left-on-read", "LEFT ON READ", "Digital longing, melancholic, intimate"),
+        new(6,  "07", "/world/queen",        "QUEEN",        "The closer. Regal, definitive, triumphant"),
+    };
+
+    public List<RoomCard> OtherRooms { get; } = new() {
+        new(0, "", "/fashion",    "FASHION ROOM",   "AI try-on · Nella's wardrobe",     "◈"),
+        new(1, "", "/rest-house", "REST HOUSE",     "Fan guestbook · Community wall",   "◉"),
+        new(2, "", "/language/en","LANGUAGE ROOM",  "EN · FR · Pidgin · Fèfè",          "◎"),
+        new(3, "", "/city",       "MOONBEAM CITY",  "3D city · Nella's world",          "◬"),
+        new(4, "", "/nella-nexus","NELLA NEXUS",    "Stream · Support · Join the inner circle", "◆"),
     };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -596,7 +454,7 @@ public partial class Atrium : ComponentBase, IAsyncDisposable
         }
     }
 
-    public void EnterWorld(string slug) => Nav.NavigateTo($"/world/{slug}");
+    public void EnterRoom(string route) => Nav.NavigateTo(route);
 
     public async ValueTask DisposeAsync()
     {
@@ -611,49 +469,58 @@ public partial class Atrium : ComponentBase, IAsyncDisposable
 .atrium-root { position: fixed; inset: 0; overflow: hidden; overflow-y: auto; background: #000; }
 .atrium-matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; }
 .atrium-scrim { position: fixed; inset: 0; z-index: 1; background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%); pointer-events: none; }
-.atrium-main { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 24px; gap: 40px; }
+
+.atrium-main { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 24px 64px; gap: 48px; }
 
 .atrium-header { text-align: center; }
 .atrium-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; font-weight: 700; letter-spacing: 6px; margin: 0; background: linear-gradient(135deg, #ffd700, #00e5ff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .atrium-sub { font-family: 'Space Grotesk', monospace; font-size: 0.72rem; letter-spacing: 3px; color: rgba(255,255,255,0.35); margin: 8px 0 0; }
 
-.worlds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; width: 100%; max-width: 960px; }
+.rooms-section { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 16px; }
+.section-label { font-family: 'Space Grotesk', monospace; font-size: 0.68rem; letter-spacing: 3px; color: rgba(201,169,106,0.5); margin: 0; }
 
-.world-card {
-    padding: 28px 24px;
-    background: rgba(0,0,0,0.7);
+.worlds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+
+.room-card {
+    padding: 24px 20px;
+    background: rgba(0,0,0,0.72);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(201,169,106,0.15);
-    border-radius: 20px;
+    border-radius: 18px;
     cursor: pointer;
-    display: flex; flex-direction: column; gap: 8px;
+    display: flex; flex-direction: column; gap: 6px;
     transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
 }
-.world-card:hover {
+.room-card:hover {
     transform: translateY(-3px) scale(1.02);
     border-color: rgba(201,169,106,0.55);
-    box-shadow: 0 0 30px rgba(201,169,106,0.12), 0 12px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 0 28px rgba(201,169,106,0.1), 0 12px 32px rgba(0,0,0,0.4);
 }
-.world-num { font-family: 'Space Grotesk', monospace; font-size: 0.7rem; color: rgba(201,169,106,0.5); font-weight: 600; }
-.world-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: 2px; }
-.world-mood { font-family: 'Space Grotesk', sans-serif; font-size: 0.82rem; color: rgba(255,255,255,0.5); margin: 0; line-height: 1.5; }
-.world-enter { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 600; color: #C9A96A; letter-spacing: 1px; margin-top: 8px; }
+.card-num { font-family: 'Space Grotesk', monospace; font-size: 0.68rem; color: rgba(201,169,106,0.5); font-weight: 600; }
+.card-icon { font-size: 1.2rem; color: #C9A96A; }
+.card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: 1.5px; }
+.card-desc { font-family: 'Space Grotesk', sans-serif; font-size: 0.78rem; color: rgba(255,255,255,0.45); margin: 0; line-height: 1.5; }
+.card-enter { font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem; font-weight: 600; color: #C9A96A; letter-spacing: 1px; margin-top: 6px; }
 
-.fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease var(--delay, 0ms), transform 0.7s cubic-bezier(0.23,1,0.32,1) var(--delay, 0ms); }
+.fade-up { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease var(--delay, 0ms), transform 0.7s cubic-bezier(0.23,1,0.32,1) var(--delay, 0ms); }
 .atrium-root.entered .fade-up { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 540px) {
     .atrium-title { font-size: 1.8rem; }
-    .worlds-grid { grid-template-columns: 1fr; }
+    .worlds-grid, .rooms-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 380px) {
+    .worlds-grid, .rooms-grid { grid-template-columns: 1fr; }
 }
 ```
 
 ---
 
-## 07 — Song-World Pages (/world/{slug})
+## 08 — Song-World Pages (/world/{slug})
 
-A single `World.razor` handles all 7 slugs via a dynamic route parameter.
+One `World.razor` handles all 7 slugs. Audio stops when entering. Each world has its own color and particle FX.
 
 ### World.razor
 ```razor
@@ -696,13 +563,13 @@ public partial class World : ComponentBase, IAsyncDisposable
     public record WorldData(string Slug, string Title, string Mood, string Description, string Color);
 
     private static readonly Dictionary<string, WorldData> WorldMap = new() {
-        ["jeje"]         = new("jeje", "JEJE", "Warm · Celebratory", "Rooted in Cameroonian tradition, JEJE is a homecoming. The rhythm of Makossa carried into new worlds.", "#C9A96A"),
-        ["danda-kidi"]   = new("danda-kidi", "DANDA KIDI", "Percussive · Fierce", "Raw energy. Bikutsi percussion transformed into something that hits harder than any drop.", "#E07B39"),
-        ["no-visa"]      = new("no-visa", "NO VISA", "Love Without Borders", "Love has no checkpoint. Open borders. No inspection. Afrobeats and Afrofusion in one breath.", "#5BA4CF"),
-        ["lukaku"]       = new("lukaku", "LUKAKU", "Self-Worth · Unstoppable", "I no fi chase. I no be Lukaku. The anthem of a woman who knows her worth.", "#C9A96A"),
-        ["omg"]          = new("omg", "OMG", "Electrifying · Peak Energy", "Peak frequency. The moment everything ignites.", "#A78BFA"),
-        ["left-on-read"] = new("left-on-read", "LEFT ON READ", "Digital Longing · Intimate", "The silence after the message. Melancholic, intimate, undeniably human.", "#94A3B8"),
-        ["queen"]        = new("queen", "QUEEN", "Regal · Triumphant", "The closer. Every world was leading here. Nella as composer. The orchestra rests.", "#FFD700"),
+        ["jeje"]         = new("jeje",         "JEJE",         "Warm · Celebratory",      "Rooted in Cameroonian tradition, JEJE is a homecoming. The rhythm of Makossa carried into new worlds.",          "#C9A96A"),
+        ["danda-kidi"]   = new("danda-kidi",   "DANDA KIDI",   "Percussive · Fierce",     "Raw energy. Bikutsi percussion transformed into something that hits harder than any drop.",                       "#E07B39"),
+        ["no-visa"]      = new("no-visa",      "NO VISA",      "Love Without Borders",    "Love has no checkpoint. Open borders. No inspection. Afrobeats and Afrofusion in one breath.",                   "#5BA4CF"),
+        ["lukaku"]       = new("lukaku",       "LUKAKU",       "Self-Worth · Unstoppable","I no fi chase. I no be Lukaku. The anthem of a woman who knows her worth.",                                      "#C9A96A"),
+        ["omg"]          = new("omg",          "OMG",          "Electrifying · Peak",     "Peak frequency. The moment everything ignites.",                                                                  "#A78BFA"),
+        ["left-on-read"] = new("left-on-read", "LEFT ON READ", "Digital Longing",         "The silence after the message. Melancholic, intimate, undeniably human.",                                        "#94A3B8"),
+        ["queen"]        = new("queen",        "QUEEN",        "Regal · Triumphant",      "The closer. Every world was leading here. Nella as composer. The orchestra rests.",                              "#FFD700"),
     };
 
     protected override void OnParametersSet()
@@ -715,6 +582,19 @@ public partial class World : ComponentBase, IAsyncDisposable
     {
         if (firstRender)
         {
+            // Stop the intro audio when entering a world
+            try
+            {
+                await JS.InvokeVoidAsync("eval", @"
+                    if (window._nellaAudio) {
+                        window._nellaAudio.pause();
+                        window._nellaAudio.currentTime = 0;
+                        window._nellaAudio = null;
+                    }
+                ");
+            }
+            catch { }
+
             await Task.Delay(150);
             try
             {
@@ -722,6 +602,7 @@ public partial class World : ComponentBase, IAsyncDisposable
                     $"typeof nellaWorlds !== 'undefined' && nellaWorlds.init('worldCanvas', '{Slug}');");
             }
             catch { }
+
             HasEntered = true;
             StateHasChanged();
         }
@@ -746,12 +627,12 @@ public partial class World : ComponentBase, IAsyncDisposable
 .world-hud { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; }
 .hud-back { background: none; border: 1px solid rgba(201,169,106,0.3); border-radius: 999px; color: rgba(255,255,255,0.7); font-family: 'Space Grotesk', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 1px; padding: 8px 18px; cursor: pointer; transition: all 200ms ease; }
 .hud-back:hover { border-color: #C9A96A; color: #fff; }
-.hud-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,0.5); }
+.hud-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,0.4); }
 
 .world-main { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px 40px; text-align: center; gap: 16px; }
 .world-display-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(3rem, 10vw, 7rem); font-weight: 700; letter-spacing: 6px; color: var(--world-color); margin: 0; text-shadow: 0 0 40px var(--world-color); }
-.world-mood-text { font-family: 'Space Grotesk', monospace; font-size: 0.85rem; letter-spacing: 3px; color: rgba(255,255,255,0.45); margin: 0; text-transform: uppercase; }
-.world-desc { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; color: rgba(255,255,255,0.65); margin: 0; line-height: 1.8; max-width: 480px; }
+.world-mood-text { font-family: 'Space Grotesk', monospace; font-size: 0.85rem; letter-spacing: 3px; color: rgba(255,255,255,0.4); margin: 0; text-transform: uppercase; }
+.world-desc { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; color: rgba(255,255,255,0.6); margin: 0; line-height: 1.8; max-width: 480px; }
 
 .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.9s ease 0.2s, transform 0.9s cubic-bezier(0.23,1,0.32,1) 0.2s; }
 .world-root.entered .fade-up { opacity: 1; transform: translateY(0); }
@@ -759,7 +640,6 @@ public partial class World : ComponentBase, IAsyncDisposable
 
 ### wwwroot/js/worlds.js
 ```javascript
-// wwwroot/js/worlds.js
 window.nellaWorlds = {
     init: function(canvasId, slug) {
         var canvas = document.getElementById(canvasId);
@@ -803,11 +683,8 @@ window.nellaWorlds = {
             ctx.clearRect(0, 0, w, h);
             for (var i = 0; i < particles.length; i++) {
                 var p = particles[i];
-                // Wrap to current canvas size
-                if (p.x > w) p.x = 0;
-                if (p.x < 0) p.x = w;
-                if (p.y > h) p.y = 0;
-                if (p.y < 0) p.y = h;
+                if (p.x > w) p.x = 0; if (p.x < 0) p.x = w;
+                if (p.y > h) p.y = 0; if (p.y < 0) p.y = h;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                 ctx.fillStyle = color;
@@ -826,33 +703,470 @@ window.nellaWorlds = {
 
 ---
 
-## 08 — Phase 2 Features (Do Not Build Yet)
+## 09 — Fashion Room (/fashion)
 
-These features are planned but not in scope for the initial build. Do not make architectural decisions that break them.
+### Overview
+AI try-on room. Fan uploads their photo + selects a garment from Nella's wardrobe. AI composites the result. **Privacy is sacred: photos held in RAM only, never written to disk, never logged.**
 
-### Fashion Room (/fashion)
-- AI try-on with 5 wardrobe ghost-mannequin renders
-- Fan uploads photo + selects garment → AI composites them wearing it
-- **SACRED: User photos NEVER persisted. No disk write. No logs containing image bytes.**
-- Three modes: ghost-mannequin, flat-lay, with-subject
+### Modes
+- **Ghost-mannequin** — garment only on invisible body. Default gallery view.
+- **Flat-lay** — garment styled on a surface. Share card fallback.
+- **With-subject** — fan's photo + garment composed. The marquee feature.
 
-### Rest House (/rest-house)
-- Fan guestbook — write and read entries
-- Abuse + spam moderation queue
-- WhatsApp channel webhook for drop notifications
+### Fashion.razor
+```razor
+@page "/fashion"
+@rendermode InteractiveServer
 
-### Language Room (/language/{lang})
-- Content in: English · French · Pidgin · Fèfè
-- Language order is fixed — never reorder alphabetically
-- Always spell Fèfè with the grave accent
+<HeadContent><PageTitle>Fashion Room — NELLA NEXUS</PageTitle></HeadContent>
 
-### Moonbeam City
-- Three.js 3D city environment representing Nella's world
-- If timeline tight: replace with 2D illustrated still + CSS parallax
+<div class="fashion-root @(HasEntered ? "entered" : "")">
+    <div class="fashion-scrim"></div>
+    <div class="world-hud">
+        <button class="hud-back" @onclick="GoBack">← ATRIUM</button>
+        <span class="hud-title">FASHION ROOM</span>
+    </div>
+    <main class="fashion-main fade-up">
+        <h1 class="fashion-title">NELLA'S WARDROBE</h1>
+        <p class="fashion-sub">// SELECT A PIECE · WEAR THE FREQUENCY //</p>
+
+        @if (ShowResult)
+        {
+            <div class="tryon-result fade-up-fast">
+                <img src="@ResultImageUrl" class="result-img" alt="Try-on result" />
+                <button class="fashion-btn" @onclick="ResetTryOn">TRY ANOTHER</button>
+            </div>
+        }
+        else if (ShowUpload)
+        {
+            <div class="upload-section fade-up-fast">
+                <p class="upload-label">Upload your photo to wear <strong>@SelectedItem?.Name</strong></p>
+                <label class="upload-zone">
+                    <input type="file" accept="image/*" @onchange="HandlePhotoUpload" class="file-input" />
+                    <span>TAP TO UPLOAD PHOTO</span>
+                </label>
+                @if (IsProcessing)
+                {
+                    <p class="processing-label">// COMPOSITING THE FREQUENCY //</p>
+                }
+                <button class="fashion-btn-ghost" @onclick="ResetTryOn">CANCEL</button>
+            </div>
+        }
+        else
+        {
+            <div class="wardrobe-grid">
+                @foreach (var item in WardrobeItems)
+                {
+                    <div class="wardrobe-card @(SelectedItem?.Id == item.Id ? "selected" : "")"
+                         @onclick="() => SelectItem(item)">
+                        <div class="wardrobe-img-wrap">
+                            <img src="@item.ImageUrl" alt="@item.Name" class="wardrobe-img" />
+                        </div>
+                        <p class="wardrobe-name">@item.Name</p>
+                        <button class="try-btn">TRY ON →</button>
+                    </div>
+                }
+            </div>
+        }
+
+        <p class="privacy-note">// Your photo is never stored. Privacy is sacred. //</p>
+    </main>
+</div>
+```
+
+### Fashion.razor.cs
+```csharp
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
+
+namespace MyBlazorApp.Components.Pages;
+
+public partial class Fashion : ComponentBase
+{
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private IHttpClientFactory HttpFactory { get; set; } = default!;
+
+    public bool HasEntered { get; set; }
+    public bool ShowUpload { get; set; }
+    public bool ShowResult { get; set; }
+    public bool IsProcessing { get; set; }
+    public string? ResultImageUrl { get; set; }
+
+    public WardrobeItem? SelectedItem { get; set; }
+
+    public record WardrobeItem(string Id, string Name, string ImageUrl);
+
+    // Populate with actual wardrobe assets when available
+    public List<WardrobeItem> WardrobeItems { get; } = new() {
+        new("001", "The Gold Drape",     "images/wardrobe/item-001.jpg"),
+        new("002", "The Cream Corset",   "images/wardrobe/item-002.jpg"),
+        new("003", "The Bamiléké Wrap",  "images/wardrobe/item-003.jpg"),
+        new("004", "The Nexus Jacket",   "images/wardrobe/item-004.jpg"),
+        new("005", "The Ritual Gown",    "images/wardrobe/item-005.jpg"),
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Stop intro audio
+            try { await JS.InvokeVoidAsync("eval", "if(window._nellaAudio){window._nellaAudio.pause();window._nellaAudio=null;}"); }
+            catch { }
+            HasEntered = true;
+            StateHasChanged();
+        }
+    }
+
+    public void SelectItem(WardrobeItem item)
+    {
+        SelectedItem = item;
+        ShowUpload = true;
+    }
+
+    public async Task HandlePhotoUpload(ChangeEventArgs e)
+    {
+        // NOTE: Photo is held in memory only — never written to disk
+        // Future: send to /api/tryon endpoint with garment ID
+        // For now: show placeholder result
+        IsProcessing = true;
+        StateHasChanged();
+        await Task.Delay(2000); // Simulate processing
+        ResultImageUrl = SelectedItem?.ImageUrl; // Replace with actual AI result URL
+        IsProcessing = false;
+        ShowUpload = false;
+        ShowResult = true;
+        StateHasChanged();
+    }
+
+    public void ResetTryOn()
+    {
+        ShowUpload = false;
+        ShowResult = false;
+        SelectedItem = null;
+        ResultImageUrl = null;
+    }
+
+    public void GoBack() => Nav.NavigateTo("/atrium");
+}
+```
 
 ---
 
-## 09 — Brand Design Tokens
+## 10 — Rest House (/rest-house)
+
+Fan guestbook and community wall. Fans leave messages and read others.
+
+### RestHouse.razor
+```razor
+@page "/rest-house"
+@rendermode InteractiveServer
+
+<HeadContent><PageTitle>Rest House — NELLA NEXUS</PageTitle></HeadContent>
+
+<div class="resthouse-root @(HasEntered ? "entered" : "")">
+    <canvas id="restHouseCanvas" class="resthouse-canvas"></canvas>
+    <div class="resthouse-scrim"></div>
+    <div class="world-hud">
+        <button class="hud-back" @onclick="GoBack">← ATRIUM</button>
+        <span class="hud-title">REST HOUSE</span>
+    </div>
+    <main class="resthouse-main fade-up">
+        <h1 class="resthouse-title">THE GUESTBOOK</h1>
+        <p class="resthouse-sub">// LEAVE YOUR FREQUENCY HERE //</p>
+
+        <div class="guestbook-form">
+            <input type="text" placeholder="Your name" @bind="GuestName" @bind:event="oninput" class="form-input" maxlength="50" />
+            <textarea placeholder="Leave a message for Nella..." @bind="GuestMessage" @bind:event="oninput" class="form-textarea" maxlength="280"></textarea>
+            <button class="submit-btn" @onclick="SubmitEntry" disabled="@(IsSubmitting || string.IsNullOrWhiteSpace(GuestMessage))">
+                @(IsSubmitting ? "TRANSMITTING…" : "LEAVE YOUR MARK →")
+            </button>
+        </div>
+
+        <div class="entries-list">
+            @foreach (var entry in Entries)
+            {
+                <div class="entry-card">
+                    <span class="entry-name">@entry.Name</span>
+                    <p class="entry-message">@entry.Message</p>
+                    <span class="entry-time">@entry.TimeAgo</span>
+                </div>
+            }
+        </div>
+    </main>
+</div>
+```
+
+### RestHouse.razor.cs
+```csharp
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+
+namespace MyBlazorApp.Components.Pages;
+
+public partial class RestHouse : ComponentBase, IAsyncDisposable
+{
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    public bool HasEntered { get; set; }
+    public bool IsSubmitting { get; set; }
+    public string GuestName { get; set; } = "";
+    public string GuestMessage { get; set; } = "";
+
+    public record GuestEntry(string Name, string Message, string TimeAgo);
+
+    // In-memory for now — replace with database in production
+    public List<GuestEntry> Entries { get; set; } = new() {
+        new("Amara", "The frequency found me. JEJE changed everything.", "2 days ago"),
+        new("Kemi", "237 in the building. Proud of you Nella.", "3 days ago"),
+        new("Marcus", "NO VISA been on repeat for a week straight.", "5 days ago"),
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try { await JS.InvokeVoidAsync("eval", "if(window._nellaAudio){window._nellaAudio.pause();window._nellaAudio=null;}"); }
+            catch { }
+            HasEntered = true;
+            StateHasChanged();
+        }
+    }
+
+    public async Task SubmitEntry()
+    {
+        if (IsSubmitting || string.IsNullOrWhiteSpace(GuestMessage)) return;
+        IsSubmitting = true;
+        StateHasChanged();
+
+        await Task.Delay(800);
+
+        var name = string.IsNullOrWhiteSpace(GuestName) ? "Anonymous" : GuestName.Trim();
+        Entries.Insert(0, new GuestEntry(name, GuestMessage.Trim(), "Just now"));
+
+        GuestName = "";
+        GuestMessage = "";
+        IsSubmitting = false;
+        StateHasChanged();
+    }
+
+    public void GoBack() => Nav.NavigateTo("/atrium");
+
+    public async ValueTask DisposeAsync()
+    {
+        try { await JS.InvokeVoidAsync("eval", "if(window._restRaf)cancelAnimationFrame(window._restRaf);"); }
+        catch { }
+    }
+}
+```
+
+---
+
+## 11 — Language Room (/language/{lang})
+
+Full NEXXUS experience in four languages. **Language order is fixed. Always spell Fèfè with the grave accent.**
+
+### Supported Languages (exact order)
+1. `en` — English
+2. `fr` — French  
+3. `ln` — Pidgin
+4. `fefe` — Fèfè
+
+### LanguageRoom.razor
+```razor
+@page "/language/{Lang}"
+@rendermode InteractiveServer
+
+<HeadContent><PageTitle>Language Room — NELLA NEXUS</PageTitle></HeadContent>
+
+<div class="lang-root @(HasEntered ? "entered" : "")">
+    <div class="lang-scrim"></div>
+    <div class="world-hud">
+        <button class="hud-back" @onclick="GoBack">← ATRIUM</button>
+        <span class="hud-title">LANGUAGE ROOM</span>
+    </div>
+    <main class="lang-main fade-up">
+        <h1 class="lang-title">@CurrentContent?.Greeting</h1>
+        <p class="lang-sub">@CurrentContent?.Tagline</p>
+
+        <div class="lang-selector">
+            @foreach (var lang in Languages)
+            {
+                <button class="lang-btn @(Lang == lang.Code ? "active" : "")"
+                        @onclick="() => SwitchLanguage(lang.Code)">
+                    @lang.Label
+                </button>
+            }
+        </div>
+
+        <p class="lang-body">@CurrentContent?.Body</p>
+    </main>
+</div>
+```
+
+### LanguageRoom.razor.cs
+```csharp
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+
+namespace MyBlazorApp.Components.Pages;
+
+public partial class LanguageRoom : ComponentBase
+{
+    [Parameter] public string Lang { get; set; } = "en";
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    public bool HasEntered { get; set; }
+
+    public record LangOption(string Code, string Label);
+    public record LangContent(string Greeting, string Tagline, string Body);
+
+    // Language order is FIXED — do not reorder
+    public List<LangOption> Languages { get; } = new() {
+        new("en",   "English"),
+        new("fr",   "Français"),
+        new("ln",   "Pidgin"),
+        new("fefe", "Fèfè"),
+    };
+
+    private static readonly Dictionary<string, LangContent> Content = new() {
+        ["en"]   = new("Welcome to the Nexus.", "// THE FREQUENCY IS UNIVERSAL //", "Nella's world speaks every language. Choose yours and step inside the frequency."),
+        ["fr"]   = new("Bienvenue au Nexus.", "// LA FRÉQUENCE EST UNIVERSELLE //", "Le monde de Nella parle toutes les langues. Choisissez la vôtre et entrez dans la fréquence."),
+        ["ln"]   = new("Welcome for Nexus.", "// DI FREQUENCY NA FOR EVRIBODI //", "Nella im world sabi all language. Choose your own make you enter inside di frequency."),
+        ["fefe"] = new("Bɔ́ŋ Nexus.", "// FÉ FRÉQUENCE Á YƐLƐ MBɄ̌ //", "Nella ɔ chem á yɛ ndɔ mɔ mbʉ̌. Líʔ yɛ lɛ ɔ chíŋ á mbʉ̌ tɔ."),
+    };
+
+    public LangContent? CurrentContent => Content.TryGetValue(Lang, out var c) ? c : Content["en"];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try { await JS.InvokeVoidAsync("eval", "if(window._nellaAudio){window._nellaAudio.pause();window._nellaAudio=null;}"); }
+            catch { }
+            HasEntered = true;
+            StateHasChanged();
+        }
+    }
+
+    public void SwitchLanguage(string code) => Nav.NavigateTo($"/language/{code}");
+    public void GoBack() => Nav.NavigateTo("/atrium");
+}
+```
+
+---
+
+## 12 — Moonbeam City (/city)
+
+A 3D city environment rendered in three.js. Represents Nella's world literally — a place fans can walk around in.
+
+**If three.js is out of scope for initial build:** replace with a 2D illustrated placeholder + CSS parallax effect. Keep the route and page shell — just swap the implementation.
+
+### City.razor
+```razor
+@page "/city"
+@rendermode InteractiveServer
+
+<HeadContent><PageTitle>Moonbeam City — NELLA NEXUS</PageTitle></HeadContent>
+
+<div class="city-root @(HasEntered ? "entered" : "")">
+    <canvas id="cityCanvas" class="city-canvas"></canvas>
+    <div class="world-hud">
+        <button class="hud-back" @onclick="GoBack">← ATRIUM</button>
+        <span class="hud-title">MOONBEAM CITY</span>
+    </div>
+    <main class="city-main fade-up">
+        <h1 class="city-title">MOONBEAM CITY</h1>
+        <p class="city-sub">// NELLA'S WORLD · WALK AROUND IN IT //</p>
+        <p class="city-coming">Three.js city — coming soon.</p>
+    </main>
+</div>
+```
+
+### City.razor.cs
+```csharp
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+
+namespace MyBlazorApp.Components.Pages;
+
+public partial class City : ComponentBase, IAsyncDisposable
+{
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    public bool HasEntered { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try { await JS.InvokeVoidAsync("eval", "if(window._nellaAudio){window._nellaAudio.pause();window._nellaAudio=null;}"); }
+            catch { }
+            // Future: initialize three.js scene here
+            // try { await JS.InvokeVoidAsync("nellaCityInit", "cityCanvas"); } catch { }
+            HasEntered = true;
+            StateHasChanged();
+        }
+    }
+
+    public void GoBack() => Nav.NavigateTo("/atrium");
+
+    public async ValueTask DisposeAsync()
+    {
+        try { await JS.InvokeVoidAsync("eval", "if(window._cityRaf)cancelAnimationFrame(window._cityRaf);"); }
+        catch { }
+    }
+}
+```
+
+---
+
+## 13 — NELLA NEXUS Hub (/nella-nexus)
+
+This page is now a room accessed from the Atrium. It is no longer the gateway. All existing code stays — streaming links, photo carousel, fan signup form, donation/music unlock flow.
+
+**No changes needed to NellaNexus.razor, NellaNexus.razor.cs, or NellaNexus.razor.css.**
+
+The only addition: stop the intro audio on page load (same pattern as all other rooms).
+
+Add this to `NellaNexus.razor.cs` in `OnAfterRenderAsync` firstRender, before the matrix rain init:
+
+```csharp
+// Stop intro audio when entering the Nexus Hub
+try { await JS.InvokeVoidAsync("eval", "if(window._nellaAudio){window._nellaAudio.pause();window._nellaAudio=null;}"); }
+catch { }
+```
+
+---
+
+## 14 — Stripe & Payments (Existing — Do Not Change)
+
+The Stripe integration in `Program.cs` is complete and secure. Do not modify it unless fixing a bug.
+
+### What Exists
+- `POST /api/create-checkout` — creates Stripe Checkout session, validates amount ($5–$10,000), rate limited 5/min
+- `POST /api/stripe-webhook` — verifies Stripe-Signature with HMAC-SHA256, confirms payment in PaymentStore
+- `GET /api/verify-payment?sessionId=xxx` — server-side payment verification before showing tracklist
+- `PaymentStore` — in-memory session store with 2-hour auto-cleanup
+
+### Stripe Dashboard Setup (one-time)
+1. Stripe Dashboard → Developers → Webhooks → Add Endpoint
+2. URL: `https://yourdomain.com/api/stripe-webhook`
+3. Event: `checkout.session.completed`
+4. Copy `whsec_...` into `appsettings.json → Stripe:WebhookSecret`
+
+### Keys
+- **Publishable key** (frontend only): `pk_live_51TQARuJ7NMEnEoS3nrnGVyiMoUZBWQ7kV97gEaw3gHpTfzoK9HtRwGx5KJXaMjxvCAIiZU9SUrPMWz2IVoMf8f1800aFjBgRWg`
+- **Secret key**: set in `appsettings.json → Stripe:SecretKey` or env var `STRIPE_SECRET_KEY`
+- **Never commit real secret keys to git**
+
+---
+
+## 15 — Brand Design Tokens
 
 | Token | Value | Usage |
 |-------|-------|-------|
@@ -861,36 +1175,37 @@ These features are planned but not in scope for the initial build. Do not make a
 | `--color-black` | `#000000` | Page backgrounds |
 | `--color-dark` | `#050508` | Card backgrounds |
 | `--font-primary` | Space Grotesk | All UI text |
-| `--font-mono` | monospace / Courier New | Protocol tags, code |
+| `--font-mono` | monospace | Protocol tags, code labels |
 
-> No purple. No neon green. No gradients outside the NELLA logo. Gold and cream ONLY for accents.
+> No purple. No neon. No gradients outside the NELLA logo. Gold and cream ONLY for accents.
 
 ---
 
-## 10 — Deployment & Setup Checklist
+## 16 — Build Order (Recommended)
 
-### Required Before Running
-- Set Stripe Secret Key in `appsettings.json` → `Stripe:SecretKey` OR env var `STRIPE_SECRET_KEY`
-- Set Stripe Webhook Secret in `appsettings.json` → `Stripe:WebhookSecret` OR env var `STRIPE_WEBHOOK_SECRET`
-- Stripe Publishable Key (frontend only): `pk_live_51TQARuJ7NMEnEoS3nrnGVyiMoUZBWQ7kV97gEaw3gHpTfzoK9HtRwGx5KJXaMjxvCAIiZU9SUrPMWz2IVoMf8f1800aFjBgRWg`
+Build in this order. Each step is deployable and testable before moving to the next.
 
-### Stripe Webhook Setup
-1. Stripe Dashboard → Developers → Webhooks → Add Endpoint
-2. URL: `https://yourdomain.com/api/stripe-webhook`
-3. Event: `checkout.session.completed`
-4. Copy `whsec_...` signing secret into config
+1. **Update Landing.razor.cs** — auto-start audio, navigate to `/atrium`
+2. **Build Atrium** — the hub with all room cards
+3. **Update World.razor** — stop audio on enter, back to atrium
+4. **Update NellaNexus.razor.cs** — stop audio on enter
+5. **Build Fashion.razor** — wardrobe gallery + upload shell (AI integration placeholder)
+6. **Build RestHouse.razor** — guestbook form + in-memory entries
+7. **Build LanguageRoom.razor** — 4 language toggle
+8. **Build City.razor** — placeholder shell (three.js later)
+9. **Add worlds.js** to wwwroot/js and reference in App.razor
 
-### Local Run
-```
+---
+
+## 17 — Deployment & Local Run
+
+```bash
 cd MyBlazorApp
 dotnet run
 # http://localhost:5070
 ```
 
-### Stripe Test Card
-- Card: `4242 4242 4242 4242`
-- Date: any future date
-- CVC: any 3 digits
+**Stripe test card:** `4242 4242 4242 4242` · any future date · any CVC
 
 ---
 
